@@ -1,0 +1,28 @@
+# ✅ General temporary files
+*.log
+*.tmp
+*.swp
+
+# ✅ OS-specific
+*.~               # Ubuntu/Linux/editor backup files
+.DS_Store         # macOS system file
+Thumbs.db         # Windows system file
+
+# ✅ IDEs and editors
+.vscode/
+.idea/
+
+# ✅ DDEV-related
+.ddev/.import-db
+.ddev/sequelpro.spf
+
+# ✅ Drupal runtime files
+sites/*/files/
+sites/*/private/
+sites/*/services.yml
+
+# ✅ Groundwork-specific
+.history/
+.backups/
+buffer/
+
