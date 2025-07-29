@@ -1,3 +1,5 @@
-# groundwork_helpers.info.yml
-
-This is a placeholder for `groundwork_helpers.info.yml`.
+name: 'Groundwork Helpers'
+type: module
+description: 'Enhances the Groundwork Theme Framework with no-code block styling, icon management, component-based blocks, layout tools, and accessibility helpers—right in the Drupal UI.'
+core_version_requirement: ^11
+package: 'Groundwork'

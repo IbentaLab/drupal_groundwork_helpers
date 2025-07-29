@@ -1,0 +1,7 @@
+name: 'Groundwork Helpers: Single Directory Components'
+type: module
+description: 'Provides configurable blocks based on Groundwork SDCs.'
+core_version_requirement: ^11
+package: 'Groundwork'
+dependencies:
+  - groundwork_helpers:groundwork_helpers

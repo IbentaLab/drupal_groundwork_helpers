@@ -1,0 +1,4 @@
+services:
+  groundwork_helpers_block_styles.style_discovery:
+    class: Drupal\groundwork_helpers_block_styles\StyleDiscovery
+    arguments: ['@theme_handler']

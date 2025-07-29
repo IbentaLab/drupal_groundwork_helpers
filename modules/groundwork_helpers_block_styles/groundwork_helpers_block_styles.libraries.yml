@@ -1,0 +1,11 @@
+filter:
+  js:
+    js/groundwork-styles-filter.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
+form-styling:
+  css:
+    theme:
+      css/groundwork-styles-form.css: {}

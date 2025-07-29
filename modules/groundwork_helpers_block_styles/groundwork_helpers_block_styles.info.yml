@@ -1,0 +1,7 @@
+name: 'Groundwork Helpers: Block Styles UI'
+type: module
+description: 'Provides a UI for applying styles to blocks.'
+core_version_requirement: ^11
+package: 'Groundwork'
+dependencies:
+  - groundwork_helpers:groundwork_helpers

@@ -1,0 +1,158 @@
+<?php
+
+/**
+ * @file
+ * Core file for the Groundwork Block Styles submodule.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\block\BlockForm;
+use Drupal\Core\Config\Entity\ConfigEntityInterface;
+use Drupal\Core\Cache\CacheableMetadata;
+use Drupal\Core\Render\Markup;
+
+/**
+ * Implements hook_form_FORM_ID_alter() for the block form.
+ */
+function groundwork_helpers_block_styles_form_block_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $form_object = $form_state->getFormObject();
+  if (!$form_object instanceof BlockForm) {
+    return;
+  }
+
+  /** @var \Drupal\groundwork_helpers_block_styles\StyleDiscovery $style_discovery */
+  $style_discovery = \Drupal::service('groundwork_helpers_block_styles.style_discovery');
+  $categorized_styles = $style_discovery->getStyles();
+
+  if (empty($categorized_styles)) {
+    return;
+  }
+
+  $block = $form_object->getEntity();
+  if (!$block instanceof ConfigEntityInterface) {
+    return;
+  }
+
+  $saved_styles = $block->getThirdPartySetting('groundwork_helpers_block_styles', 'styles', []);
+
+  $form['groundwork_styles'] = [
+    '#type' => 'details',
+    '#title' => t('Groundwork Block Styles'),
+    '#open' => TRUE,
+    '#weight' => 20,
+    '#attributes' => ['id' => 'groundwork-styles-wrapper'],
+  ];
+
+  $applied_styles_text = !empty($saved_styles) ? implode(' ', $saved_styles) : '<em>' . t('None') . '</em>';
+  $form['groundwork_styles']['help_text'] = [
+    '#markup' => '<div class="groundwork-styles-helptext">' .
+      t('<strong>Style this block visually—no code needed.</strong><br>Choose one or more design styles (like layout, spacing, or color) from the list below. You can also search by class name.') .
+      '<div class="applied-styles"><strong>' . t('Applied styles:') . '</strong> <span class="applied-styles-list">' . $applied_styles_text . '</span></div>' .
+      '</div>',
+  ];
+
+  $form['groundwork_styles']['style_filter'] = [
+    '#type' => 'search',
+    '#title' => t('Search styles'),
+    '#title_display' => 'invisible',
+    '#placeholder' => t('Search for styles...'),
+    '#attributes' => ['class' => ['groundwork-style-filter']],
+  ];
+
+  foreach ($categorized_styles as $category => $files) {
+    $form['groundwork_styles'][$category] = [
+      '#type' => 'details',
+      '#title' => $category,
+      '#open' => FALSE,
+    ];
+
+    foreach ($files as $filename => $file_data) {
+      $options = [];
+      foreach ($file_data['components'] as $class_name => $description) {
+        $option_label = $class_name;
+        if (!empty($description)) {
+          $option_label .= ' <span class="style-description">(' . $description . ')</span>';
+        }
+        $options[$class_name] = Markup::create($option_label);
+      }
+
+      $formatted_filename = ucwords(str_replace(['-', '_', '.'], ' ', $filename));
+
+      $file_title = '<strong>' . $formatted_filename . '</strong>';
+      if (!empty($file_data['description'])) {
+        $file_title .= ' - <span class="file-description">' . $file_data['description'] . '</span>';
+      }
+
+      $form['groundwork_styles'][$category][$filename] = [
+        '#type' => 'details',
+        '#title' => Markup::create($file_title),
+        '#open' => FALSE,
+      ];
+
+      $form['groundwork_styles'][$category][$filename]['styles'] = [
+        '#type' => 'checkboxes',
+        '#title' => $formatted_filename,
+        '#title_display' => 'invisible',
+        '#options' => $options,
+        '#default_value' => $saved_styles,
+        '#attributes' => ['class' => ['groundwork-style-options']],
+      ];
+    }
+  }
+
+  $form['#attached']['library'][] = 'groundwork_helpers_block_styles/filter';
+  $form['#attached']['library'][] = 'groundwork_helpers_block_styles/form-styling';
+  $form['actions']['submit']['#submit'][] = 'groundwork_helpers_block_styles_form_submit';
+}
+
+/**
+ * Custom form submission handler to save selected styles.
+ */
+function groundwork_helpers_block_styles_form_submit($form, FormStateInterface $form_state) {
+  $form_object = $form_state->getFormObject();
+  if (!$form_object instanceof BlockForm) {
+    return;
+  }
+
+  $block = $form_object->getEntity();
+  if (!$block instanceof ConfigEntityInterface) {
+    return;
+  }
+
+  $values = $form_state->getValue('groundwork_styles');
+  $selected_styles = [];
+  if (is_array($values)) {
+    foreach ($values as $category => $files) {
+      if (is_array($files)) {
+        foreach ($files as $filename => $data) {
+          if (is_array($data) && isset($data['styles'])) {
+            $selected_styles = array_merge($selected_styles, array_keys(array_filter($data['styles'])));
+          }
+        }
+      }
+    }
+  }
+
+  $block->setThirdPartySetting('groundwork_helpers_block_styles', 'styles', array_values(array_unique($selected_styles)));
+  $block->save();
+}
+
+/**
+ * Implements hook_preprocess_block().
+ */
+function groundwork_helpers_block_styles_preprocess_block(&$variables) {
+  if (isset($variables['elements']['#id'])) {
+    $block = \Drupal::entityTypeManager()->getStorage('block')->load($variables['elements']['#id']);
+
+    if ($block instanceof ConfigEntityInterface) {
+      $saved_styles = $block->getThirdPartySetting('groundwork_helpers_block_styles', 'styles', []);
+
+      if (!empty($saved_styles)) {
+        foreach ($saved_styles as $style) {
+          $variables['attributes']['class'][] = $style;
+        }
+        CacheableMetadata::createFromObject($block)->applyTo($variables);
+      }
+    }
+  }
+}

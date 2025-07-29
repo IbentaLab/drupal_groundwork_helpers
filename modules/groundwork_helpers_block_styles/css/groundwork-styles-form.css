@@ -1,0 +1,21 @@
+/*
+ * Makes the file-level description text inside a <details> summary not bold.
+ */
+.details-wrapper .file-description {
+  font-weight: normal;
+  font-style: italic;
+  color: #666;
+}
+
+/*
+ * Makes the class-level description text smaller and italic.
+ */
+.form-checkboxes .style-description {
+  font-size: 0.9em;
+  font-style: italic;
+  color: #666;
+}
+
+.groundwork-styles-helptext .applied-styles {
+  margin-top: 1em;
+}

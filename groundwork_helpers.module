@@ -1,3 +1,39 @@
-# groundwork_helpers.module
+<?php
 
-This is a placeholder for `groundwork_helpers.module`.
+/**
+ * @file
+ * Primary module file for the Groundwork Helpers module.
+ */
+
+use Drupal\Core\Extension\Requirement\RequirementSeverity;
+
+/**
+ * Implements hook_requirements().
+ *
+ * This hook checks that the Groundwork theme is installed and enabled,
+ * providing a clear message to the site builder if it is not.
+ * This works around a UI bug where theme dependencies are sometimes
+
+ * incorrectly reported as "missing" on the Extend page.
+ */
+function groundwork_helpers_requirements($phase) {
+  $requirements = [];
+
+  if ($phase == 'install') {
+    /** @var \Drupal\Core\Extension\ThemeHandlerInterface $theme_handler */
+    $theme_handler = \Drupal::service('theme_handler');
+    $theme_name = 'groundwork';
+
+    // Check if the theme is installed.
+    if (!$theme_handler->themeExists($theme_name)) {
+      $requirements['groundwork_theme'] = [
+        'title' => t('Groundwork Helpers'),
+        'value' => t('The Groundwork theme is not installed.'),
+        'description' => t('This module requires the Groundwork theme to be installed. Please <a href=":url">install the Groundwork theme</a> and try again.', [':url' => 'https://www.drupal.org/project/groundwork']),
+        'severity' => RequirementSeverity::Error,
+      ];
+    }
+  }
+
+  return $requirements;
+}
