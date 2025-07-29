@@ -1,4 +1,3 @@
-
 # 🧩 Groundwork Helpers – Companion Module for the Groundwork Theme Framework
 
 **Groundwork Helpers** is a modular, no-code-first companion module for the [Groundwork Theme Framework](https://github.com/IbentaLab/drupal_groundwork "null"). It supercharges your Drupal site by bringing design-system tools directly into the UI—accessible to developers, editors, and site builders alike.
@@ -18,9 +17,11 @@
 ## 🧰 Requirements
 
 * Drupal 11+
-* [Groundwork Theme](https://github.com/IbentaLab/drupal_groundwork "null") installed and enabled.
+* [Groundwork Theme Framework](https://github.com/IbentaLab/drupal_groundwork "null") installed and enabled.
 
 ## 🚀 Installation
+
+#### **The Groundwrk Helpers module will be officially released on drupal.org *upon reaching stable status*.**
 
 1. Install the module using Composer:
    ```
