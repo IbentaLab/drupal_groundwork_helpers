@@ -17,10 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   id = "groundwork_card_with_ribbon",
  *   admin_label = @Translation("Card with Ribbon"),
  *   category = @Translation("Groundwork Components"),
- *   permission = "use groundwork card with ribbon component",
- *   context_definitions = {
- *     "layout_builder.entity" = @ContextDefinition("entity", required = FALSE),
- *   }
+ *   permission = "use groundwork card with ribbon component"
  * )
  */
 class CardWithRibbonBlock extends BlockBase implements ContainerFactoryPluginInterface {

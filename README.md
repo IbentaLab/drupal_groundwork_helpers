@@ -12,7 +12,7 @@
 | **Groundwork Components** | ✅ Implemented   | Provides configurable blocks based on the theme's Single Directory Components (SDCs), such as an Accordion and Dropdown.                                                                        |
 | **Gwicons UI**            | 📝 Planned       | A UI-based SVG icon management and picker for Layout Builder, WYSIWYG, or blocks.                                                                                                               |
 | **Layout Patterns**       | 📝 Planned       | A library of reusable layout recipes and presets for Layout Builder.                                                                                                                            |
-| **DevTools**              | 📝 Planned       | Developer and accessibility audit tools (e.g., markup validation, color contrast checker).                                                                                                      |
+| **DevTools**              | 📝 Started       | Developer and accessibility audit tools (e.g., markup validation, color contrast checker).                                                                                                      |
 
 ## 🧰 Requirements
 

@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * id = "groundwork_process_steps",
  * admin_label = @Translation("Process Steps"),
  * category = @Translation("Groundwork Components"),
- * permission = "use groundwork process steps component",
+ * permission = "use groundwork process steps component"
  * )
  */
 class ProcessStepsBlock extends BlockBase implements ContainerFactoryPluginInterface {

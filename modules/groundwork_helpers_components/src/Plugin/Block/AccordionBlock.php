@@ -17,10 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * id = "groundwork_accordion",
  * admin_label = @Translation("Content Accordion"),
  * category = @Translation("Groundwork Components"),
- * permission = "use groundwork accordion component",
- * context_definitions = {
- * "layout_builder.entity" = @ContextDefinition("entity", required = FALSE),
- * }
+ * permission = "use groundwork accordion component"
  * )
  */
 class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterface {
