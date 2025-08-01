@@ -1,0 +1,27 @@
+access groundwork devtools bar:
+  title: 'Access Groundwork DevTools bar'
+  description: 'View the DevTools bar and any enabled feature toggles.'
+
+toggle theme:
+  title: 'Toggle theme'
+  description: 'Switch between Groundwork theme presets (light/dark/variants).'
+
+clear all caches:
+  title: 'Clear all caches'
+  description: 'Clear all Drupal caches from the DevTools bar.'
+
+show region outlines:
+  title: 'Show region/block/component outlines'
+  description: 'Toggle visual overlays showing theme regions, blocks, and components.'
+
+show grid overlay:
+  title: 'Show grid overlay'
+  description: 'Display a visual grid overlay matching the Groundwork grid.'
+
+breakpoints preview:
+  title: 'Breakpoints preview'
+  description: 'Preview site at different responsive breakpoints.'
+
+css debug mode:
+  title: 'CSS debug mode'
+  description: 'Enable CSS debug styles (outlines, backgrounds, spacing aids).'

@@ -1,0 +1,33 @@
+{#
+/**
+ * Groundwork Helpers DevTools frontend bar Twig template.
+ */
+#}
+<div id="gw-devtools-bar" class="gw-devtools-bar gw-devtools-expanded" data-default-state="{{ default_state }}">
+  <div class="gw-devtools-bar-inner">
+    <button class="gw-devtools-toggle" title="Minimize" aria-label="Minimize">–</button>
+    <div class="gw-devtools-tools">
+      {% if perms.toggle_theme %}
+        <button class="gw-devtools-btn" data-action="toggle-theme" title="Toggle theme">Theme</button>
+      {% endif %}
+      {% if perms.clear_all_caches %}
+        <button class="gw-devtools-btn" data-action="clear-caches" title="Clear all caches">Cache</button>
+      {% endif %}
+      {% if perms.show_region_outlines %}
+        <button class="gw-devtools-btn" data-action="region-outline" title="Show region/block/component outlines">Regions</button>
+      {% endif %}
+      {% if perms.show_grid_overlay %}
+        <button class="gw-devtools-btn" data-action="grid-overlay" title="Show grid overlay">Grid</button>
+      {% endif %}
+      {% if perms.breakpoints_preview %}
+        <button class="gw-devtools-btn" data-action="breakpoints-preview" title="Breakpoints preview">Breakpoints</button>
+      {% endif %}
+      {% if perms.css_debug_mode %}
+        <button class="gw-devtools-btn" data-action="css-debug" title="CSS debug mode">CSS</button>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<button id="gw-devtools-minimized" class="gw-devtools-minimized" title="Show DevTools" aria-label="Show DevTools" style="display: none;">
+  <svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="#222"/><text x="16" y="22" text-anchor="middle" fill="#fff" font-size="16" font-family="sans-serif" font-weight="bold">GW</text></svg>
+</button>

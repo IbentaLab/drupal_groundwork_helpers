@@ -1,0 +1,7 @@
+name: Groundwork Helpers DevTools
+type: module
+description: 'Frontend developer toolbar for the Groundwork Theme Framework. Toggle theme, debug layouts, clear caches, and more—all with fine-grained permissions.'
+core_version_requirement: ^11
+package: Groundwork
+dependencies:
+  - groundwork_helpers:groundwork_helpers

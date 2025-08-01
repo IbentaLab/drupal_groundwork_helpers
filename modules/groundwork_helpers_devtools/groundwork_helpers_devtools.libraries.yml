@@ -1,0 +1,9 @@
+bar:
+  version: 1.x
+  js:
+    js/devtools-bar.js: {}
+  css:
+    theme:
+      css/devtools-bar.css: {}
+  dependencies:
+    - core/drupal

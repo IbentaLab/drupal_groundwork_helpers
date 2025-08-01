@@ -21,7 +21,7 @@
 
 ## 🚀 Installation
 
-#### **The Groundwrk Helpers module will be officially released on drupal.org *upon reaching stable status*.**
+#### **The Groundwork Helpers module will be officially released on drupal.org *upon reaching stable status*.**
 
 1. Install the module using Composer:
    ```

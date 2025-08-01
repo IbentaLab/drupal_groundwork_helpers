@@ -11,19 +11,19 @@ use Drupal\Core\Render\RendererInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Provides an Accordion block using the Content Accordion SDC.
+ * Provides a Tabs block using the Content Tabs SDC.
  *
  * @Block(
- * id = "groundwork_accordion",
- * admin_label = @Translation("Content Accordion"),
+ * id = "groundwork_tabs",
+ * admin_label = @Translation("Content Tabs"),
  * category = @Translation("Groundwork Components"),
- * permission = "use groundwork accordion component",
+ * permission = "use groundwork tabs component",
  * context_definitions = {
  * "layout_builder.entity" = @ContextDefinition("entity", required = FALSE),
  * }
  * )
  */
-class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterface {
+class TabsBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
    * The renderer service.
@@ -33,7 +33,7 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
   protected RendererInterface $renderer;
 
   /**
-   * Constructs a new AccordionBlock instance.
+   * Constructs a new TabsBlock instance.
    */
   public function __construct(
     array $configuration,
@@ -62,9 +62,9 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
    */
   public function defaultConfiguration(): array {
     return [
-      'accordion_items' => [
+      'tabs_items' => [
         [
-          'title' => '',
+          'label' => '',
           'content' => ['value' => '', 'format' => 'basic_html'],
         ],
       ],
@@ -76,10 +76,10 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
    */
   public function blockForm($form, FormStateInterface $form_state): array {
     $config = $this->getConfiguration();
-    $saved_items = $config['accordion_items'] ?? [];
+    $saved_items = $config['tabs_items'] ?? [];
 
     $saved_items = array_filter($saved_items, function($item) {
-      return !empty($item['title']) && !empty($item['content']['value']);
+      return !empty($item['label']) && !empty($item['content']['value']);
     });
     $saved_items = array_values($saved_items);
 
@@ -111,7 +111,7 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
     for ($i = 0; $i < $item_count; $i++) {
       if (!isset($current_items[$i])) {
         $current_items[$i] = [
-          'title' => '',
+          'label' => '',
           'content' => ['value' => '', 'format' => 'basic_html'],
         ];
       }
@@ -120,13 +120,13 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
         '#type' => 'details',
         '#title' => $this->t('Item @num', ['@num' => $i + 1]),
         '#open' => TRUE,
-        '#attributes' => ['class' => ['accordion-item-wrapper']],
+        '#attributes' => ['class' => ['tabs-item-wrapper']],
       ];
 
-      $form['items_wrapper'][$i]['title'] = [
+      $form['items_wrapper'][$i]['label'] = [
         '#type' => 'textfield',
-        '#title' => $this->t('Heading'),
-        '#default_value' => $current_items[$i]['title'] ?? '',
+        '#title' => $this->t('Tab Label'),
+        '#default_value' => $current_items[$i]['label'] ?? '',
         '#required' => TRUE,
         '#maxlength' => 255,
       ];
@@ -152,7 +152,7 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
 
       $form['items_wrapper'][$i]['content'] = [
         '#type' => 'text_format',
-        '#title' => $this->t('Panel Content'),
+        '#title' => $this->t('Tab Content'),
         '#default_value' => $content_value,
         '#format' => $content_format,
         '#required' => TRUE,
@@ -303,10 +303,10 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
 
     if (isset($values['items_wrapper']) && is_array($values['items_wrapper'])) {
       foreach ($values['items_wrapper'] as $item_values) {
-        if (!empty(trim($item_values['title'])) &&
+        if (!empty(trim($item_values['label'])) &&
             !empty(trim($item_values['content']['value']))) {
           $items[] = [
-            'title' => trim($item_values['title']),
+            'label' => trim($item_values['label']),
             'content' => $item_values['content'],
           ];
         }
@@ -314,15 +314,10 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
     }
 
     if (empty($items)) {
-      $items = [
-        [
-          'title' => '',
-          'content' => ['value' => '', 'format' => 'basic_html'],
-        ],
-      ];
+      $items = [['label' => '', 'content' => ['value' => '', 'format' => 'basic_html']]];
     }
 
-    $this->setConfigurationValue('accordion_items', $items);
+    $this->setConfigurationValue('tabs_items', $items);
   }
 
   /**
@@ -330,11 +325,11 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
    */
   public function build(): array {
     $config = $this->getConfiguration();
-    $items = $config['accordion_items'] ?? [];
+    $items = $config['tabs_items'] ?? [];
 
-    $accordion_items = [];
+    $tab_items = [];
     foreach ($items as $item) {
-      if (!empty($item['title']) && !empty($item['content'])) {
+      if (!empty($item['label']) && !empty($item['content'])) {
         $content = $item['content'];
         $content_html = '';
         if (is_array($content) && isset($content['value'])) {
@@ -350,24 +345,24 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
         }
 
         if (!empty($content_html)) {
-          $accordion_items[] = [
-            'title' => $item['title'],
-            'content' => $content_html,
-          ];
+            $tab_items[] = [
+              'label' => $item['label'],
+              'content' => $content_html,
+            ];
         }
       }
     }
 
-    if (empty($accordion_items)) {
+    if (empty($tab_items)) {
       return [];
     }
 
     return [
       '#type' => 'component',
-      '#component' => 'groundwork:accordion',
+      '#component' => 'groundwork:tabs',
       '#props' => [
-        'unique_id' => uniqid('acc_'),
-        'items' => $accordion_items,
+        'unique_id' => uniqid('tabs_'),
+        'items' => $tab_items,
       ],
       '#cache' => [
         'contexts' => ['url.path', 'url.query_args'],

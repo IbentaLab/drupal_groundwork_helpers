@@ -1,0 +1,68 @@
+<?php
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function groundwork_helpers_devtools_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.groundwork_helpers_devtools':
+      return t('Groundwork Helpers DevTools provides a floating frontend developer bar for the Groundwork Theme Framework. Configure permissions to control access to each tool. See the README for feature details.');
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function groundwork_helpers_devtools_theme($existing, $type, $theme, $path) {
+  return [
+    'groundwork_helpers_devtools_bar' => [
+      'variables' => [
+        'perms' => [],
+        'default_state' => 'expanded',
+      ],
+      'template' => 'groundwork-helpers-devtools-bar',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_page_bottom().
+ * Renders the DevTools bar at the bottom of the page if the user has access.
+ */
+function groundwork_helpers_devtools_page_bottom(array &$page_bottom): void {
+  $account = \Drupal::currentUser();
+  if (!$account->hasPermission('access groundwork devtools bar')) {
+    return;
+  }
+
+  $perms = [
+    'toggle_theme' => $account->hasPermission('toggle theme'),
+    'clear_all_caches' => $account->hasPermission('clear all caches'),
+    'show_region_outlines' => $account->hasPermission('show region outlines'),
+    'show_grid_overlay' => $account->hasPermission('show grid overlay'),
+    'breakpoints_preview' => $account->hasPermission('breakpoints preview'),
+    'css_debug_mode' => $account->hasPermission('css debug mode'),
+  ];
+  $default_state = \Drupal::config('groundwork_helpers_devtools.settings')->get('default_state') ?? 'expanded';
+
+  $page_bottom['groundwork_helpers_devtools_bar'] = [
+    '#theme' => 'groundwork_helpers_devtools_bar',
+    '#perms' => $perms,
+    '#default_state' => $default_state,
+  ];
+}
+
+
+/**
+ * Implements hook_page_attachments().
+ * Use only for global libraries or settings if needed.
+ */
+function groundwork_helpers_devtools_page_attachments(array &$attachments): void {
+  $account = \Drupal::currentUser();
+  if ($account->hasPermission('access groundwork devtools bar')) {
+    $attachments['#attached']['library'][] = 'groundwork_helpers_devtools/bar';
+  }
+}
+

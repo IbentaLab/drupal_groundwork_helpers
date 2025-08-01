@@ -11,19 +11,19 @@ use Drupal\Core\Render\RendererInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Provides an Accordion block using the Content Accordion SDC.
+ * Provides a Vertical Tabs block using the Vertical Content Tabs SDC.
  *
  * @Block(
- * id = "groundwork_accordion",
- * admin_label = @Translation("Content Accordion"),
+ * id = "groundwork_vertical_tabs",
+ * admin_label = @Translation("Vertical Content Tabs"),
  * category = @Translation("Groundwork Components"),
- * permission = "use groundwork accordion component",
+ * permission = "use groundwork vertical tabs component",
  * context_definitions = {
  * "layout_builder.entity" = @ContextDefinition("entity", required = FALSE),
  * }
  * )
  */
-class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterface {
+class VerticalTabsBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
    * The renderer service.
@@ -33,7 +33,7 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
   protected RendererInterface $renderer;
 
   /**
-   * Constructs a new AccordionBlock instance.
+   * Constructs a new VerticalTabsBlock instance.
    */
   public function __construct(
     array $configuration,
@@ -62,9 +62,9 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
    */
   public function defaultConfiguration(): array {
     return [
-      'accordion_items' => [
+      'vertical_tabs_items' => [
         [
-          'title' => '',
+          'label' => '',
           'content' => ['value' => '', 'format' => 'basic_html'],
         ],
       ],
@@ -76,10 +76,10 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
    */
   public function blockForm($form, FormStateInterface $form_state): array {
     $config = $this->getConfiguration();
-    $saved_items = $config['accordion_items'] ?? [];
+    $saved_items = $config['vertical_tabs_items'] ?? [];
 
     $saved_items = array_filter($saved_items, function($item) {
-      return !empty($item['title']) && !empty($item['content']['value']);
+      return !empty($item['label']) && !empty($item['content']['value']);
     });
     $saved_items = array_values($saved_items);
 
@@ -103,6 +103,7 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
 
     if ($is_ajax_rebuild) {
       $user_input = $form_state->getUserInput();
+      // On AJAX rebuild, the values are in 'settings'.
       $current_items = $user_input['settings']['items_wrapper'] ?? $saved_items;
     } else {
       $current_items = $saved_items;
@@ -111,7 +112,7 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
     for ($i = 0; $i < $item_count; $i++) {
       if (!isset($current_items[$i])) {
         $current_items[$i] = [
-          'title' => '',
+          'label' => '',
           'content' => ['value' => '', 'format' => 'basic_html'],
         ];
       }
@@ -120,13 +121,13 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
         '#type' => 'details',
         '#title' => $this->t('Item @num', ['@num' => $i + 1]),
         '#open' => TRUE,
-        '#attributes' => ['class' => ['accordion-item-wrapper']],
+        '#attributes' => ['class' => ['tabs-item-wrapper']],
       ];
 
-      $form['items_wrapper'][$i]['title'] = [
+      $form['items_wrapper'][$i]['label'] = [
         '#type' => 'textfield',
-        '#title' => $this->t('Heading'),
-        '#default_value' => $current_items[$i]['title'] ?? '',
+        '#title' => $this->t('Tab Label'),
+        '#default_value' => $current_items[$i]['label'] ?? '',
         '#required' => TRUE,
         '#maxlength' => 255,
       ];
@@ -139,25 +140,24 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
           $content_value = $content_data['value'] ?? '';
           $content_format = $content_data['format'] ?? 'basic_html';
         }
-      }
-      elseif (isset($current_items[$i]['content'])) {
+      } elseif (isset($current_items[$i]['content'])) {
         if (is_array($current_items[$i]['content'])) {
           $content_value = $current_items[$i]['content']['value'] ?? '';
           $content_format = $current_items[$i]['content']['format'] ?? 'basic_html';
-        }
-        else {
+        } else {
           $content_value = $current_items[$i]['content'];
         }
       }
 
       $form['items_wrapper'][$i]['content'] = [
         '#type' => 'text_format',
-        '#title' => $this->t('Panel Content'),
+        '#title' => $this->t('Tab Content'),
         '#default_value' => $content_value,
         '#format' => $content_format,
         '#required' => TRUE,
       ];
 
+      // Use a standard container for actions to prevent them from being moved.
       $form['items_wrapper'][$i]['actions'] = [
         '#type' => 'container',
         '#attributes' => ['class' => ['container-inline', 'item-actions']],
@@ -234,6 +234,7 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
     $index = (int) $name_parts[2];
 
     $user_input = $form_state->getUserInput();
+    // Correctly access the nested items array from user input.
     $items = &$user_input['settings']['items_wrapper'];
 
     if (!is_array($items)) {
@@ -258,6 +259,7 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
     $form_state->setRebuild();
   }
 
+
   /**
    * Submit callback for adding items.
    */
@@ -277,6 +279,7 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
     $item_count = $form_state->get('item_count') ?? 1;
     if ($item_count > 1) {
       $user_input = $form_state->getUserInput();
+      // Correctly access the nested items array from user input.
       if (isset($user_input['settings']['items_wrapper'][$item_index])) {
         unset($user_input['settings']['items_wrapper'][$item_index]);
         $user_input['settings']['items_wrapper'] = array_values($user_input['settings']['items_wrapper']);
@@ -291,6 +294,8 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
    * AJAX callback for form operations.
    */
   public static function ajaxCallback(array $form, FormStateInterface $form_state): array {
+    // In a block configuration form, the form elements from blockForm()
+    // are nested within the 'settings' key of the main form array.
     return $form['settings']['items_wrapper'];
   }
 
@@ -303,10 +308,10 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
 
     if (isset($values['items_wrapper']) && is_array($values['items_wrapper'])) {
       foreach ($values['items_wrapper'] as $item_values) {
-        if (!empty(trim($item_values['title'])) &&
+        if (!empty(trim($item_values['label'])) &&
             !empty(trim($item_values['content']['value']))) {
           $items[] = [
-            'title' => trim($item_values['title']),
+            'label' => trim($item_values['label']),
             'content' => $item_values['content'],
           ];
         }
@@ -314,15 +319,10 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
     }
 
     if (empty($items)) {
-      $items = [
-        [
-          'title' => '',
-          'content' => ['value' => '', 'format' => 'basic_html'],
-        ],
-      ];
+      $items = [['label' => '', 'content' => ['value' => '', 'format' => 'basic_html']]];
     }
 
-    $this->setConfigurationValue('accordion_items', $items);
+    $this->setConfigurationValue('vertical_tabs_items', $items);
   }
 
   /**
@@ -330,13 +330,14 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
    */
   public function build(): array {
     $config = $this->getConfiguration();
-    $items = $config['accordion_items'] ?? [];
+    $items = $config['vertical_tabs_items'] ?? [];
 
-    $accordion_items = [];
+    $tab_items = [];
     foreach ($items as $item) {
-      if (!empty($item['title']) && !empty($item['content'])) {
+      if (!empty($item['label']) && !empty($item['content'])) {
         $content = $item['content'];
         $content_html = '';
+
         if (is_array($content) && isset($content['value'])) {
           $processed_content = [
             '#type' => 'processed_text',
@@ -350,24 +351,24 @@ class AccordionBlock extends BlockBase implements ContainerFactoryPluginInterfac
         }
 
         if (!empty($content_html)) {
-          $accordion_items[] = [
-            'title' => $item['title'],
-            'content' => $content_html,
-          ];
+            $tab_items[] = [
+              'label' => $item['label'],
+              'content' => $content_html,
+            ];
         }
       }
     }
 
-    if (empty($accordion_items)) {
+    if (empty($tab_items)) {
       return [];
     }
 
     return [
       '#type' => 'component',
-      '#component' => 'groundwork:accordion',
+      '#component' => 'groundwork:vertical-tabs',
       '#props' => [
-        'unique_id' => uniqid('acc_'),
-        'items' => $accordion_items,
+        'unique_id' => uniqid('vtabs_'),
+        'items' => $tab_items,
       ],
       '#cache' => [
         'contexts' => ['url.path', 'url.query_args'],

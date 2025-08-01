@@ -1,0 +1,105 @@
+.gw-devtools-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 10050;
+  background: #222;
+  color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 24px rgba(0,0,0,0.16);
+  padding: 8px 20px 8px 12px;
+  display: flex;
+  align-items: center;
+  min-width: 240px;
+  max-width: 90vw;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.gw-devtools-bar-inner {
+  display: flex;
+  align-items: center;
+}
+
+.gw-devtools-toggle {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 26px;
+  font-weight: bold;
+  margin-right: 12px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.gw-devtools-tools {
+  display: flex;
+  gap: 8px;
+}
+
+.gw-devtools-btn {
+  background: #333;
+  border: none;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.gw-devtools-btn:hover,
+.gw-devtools-btn:focus {
+  background: #444;
+}
+
+.gw-devtools-minimized {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 10051;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.gw-devtools-minimized svg {
+  display: block;
+}
+
+.gw-devtools-bar.gw-devtools-minimized {
+  display: none;
+}
+
+.gw-devtools-notice {
+  position: fixed;
+  left: 50%;
+  bottom: 80px;
+  transform: translateX(-50%);
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #444;
+  z-index: 10060;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  opacity: 1;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.gw-devtools-notice--success {
+  background-color: #4caf50;
+}
+
+.gw-devtools-notice--error {
+  background-color: #f44336;
+}
+
+.gw-devtools-notice--fade {
+  opacity: 0;
+  transform: translateX(-50%) translateY(20px);
+}
+

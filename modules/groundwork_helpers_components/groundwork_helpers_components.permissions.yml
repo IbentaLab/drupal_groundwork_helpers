@@ -1,0 +1,41 @@
+# Defines permissions for the Groundwork Helpers Components module.
+
+# This is a general administrative permission.
+# Users with this role can typically access all components.
+administer groundwork components:
+  title: 'Administer Groundwork Components'
+  description: 'Access all Groundwork Helper components. This is recommended for administrator roles.'
+  restrict access: true
+
+# Fine-grained permissions for each component block.
+use groundwork accordion component:
+  title: 'Use Accordion component'
+  description: 'Allows a user to add and configure the Accordion block.'
+
+use groundwork banner component:
+  title: 'Use Banner component'
+  description: 'Allows a user to add and configure the Banner block.'
+
+use groundwork card with ribbon component:
+  title: 'Use Card with Ribbon component'
+  description: 'Allows a user to add and configure the Card with Ribbon block.'
+
+use groundwork cta component:
+  title: 'Use CTA component'
+  description: 'Allows a user to add and configure the CTA block.'
+
+use groundwork process steps component:
+  title: 'Use Process Steps component'
+  description: 'Allows a user to add and configure the Process Steps block.'
+
+use groundwork tabs component:
+  title: 'Use Tabs component'
+  description: 'Allows a user to add and configure the Tabs block.'
+
+use groundwork vertical tabs component:
+  title: 'Use Vertical Tabs component'
+  description: 'Allows a user to add and configure the Vertical Tabs block.'
+
+use groundwork welcome component:
+  title: 'Use Welcome component'
+  description: 'Allows a user to add and configure the Welcome block.'

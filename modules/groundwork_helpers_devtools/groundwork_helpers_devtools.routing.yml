@@ -1,0 +1,10 @@
+groundwork_helpers_devtools.clear_caches:
+  path: '/groundwork-devtools/clear-caches'
+  defaults:
+    _controller: '\Drupal\groundwork_helpers_devtools\Controller\GroundworkHelpersDevtoolsController::clearCaches'
+    _title: 'Clear caches'
+  requirements:
+    _permission: 'clear all caches'
+  options:
+    _no_cache: 'TRUE'
+
